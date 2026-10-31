@@ -37,20 +37,37 @@ Real-world recommenders use a mix of both.
 
 Each `Song` has features:
 
-* `genre`
-* `mood`
-* `energy`
-* `tempo_bpm`
-* `valence`
-* `danceability`
-* `acousticness`
+* `genre` - String
+* `mood` - String
+* `energy` - float [0.0-1.0]
+* `tempo_bpm` - int
+* `valence` - float [0.0-1.0]
+* `danceability` - float [0.0-1.0]
+* `acousticness` - float [0.0-1.0]
 
-Each `UserProfile`
+Each `UserProfile` represent's a User's preferences:
 
 * `favorite_genre` - User's favorite genre of Song
 * `favorite_mood` - User's favorite mood of Song
 * `target_energy` - User's preferred Song `energy`
-* `likes_acoustic` - User likes acoustic?
+* `target_valence` - User's preferred Song `valence`
+* `target_danceability` - User's preferred Song `danceability`
+* `target_acousticness` - User's preferred Song `acousticness`
+
+The recommender will score each `Song` based on the `UserProfile`.
+
+* Direct genre match adds 1.5 points
+* Direct mood match adds 1.0 points
+* Each feature is calculated as a weighted distance from target and added to the score.
+  * Feature Weights:
+    * **Energy:** `1.5`
+    * **Valence:** `1.0`
+    * **Danceability:** `0.5`
+    * **Acousticness:** `0.5`
+  * The **distance from the target** is `1 - abs(feature_value - target_feature_value)`.
+  * For example, Energy with weight 1.5 will calculate `1.5 * distance from target`, and Danceability with weight 0.5 will calculate `0.5 * distance from target`. Both these values will add to a `Song`'s score.
+
+Given the highest scores for each song, the recommend the top `k` `Songs`. This system has some bias on Genre; it is an exact match and is tied for the highest weight with Energy, so it has the chance to outweigh some of the other features.
 
 ---
 
