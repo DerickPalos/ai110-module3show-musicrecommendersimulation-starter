@@ -48,13 +48,11 @@ Each Song also has Energy, Valence, Danceability, and Acousticness, all in the r
 
 ## 5. Strengths  
 
-Where does your system seem to work well  
+recomMEnd works best for users whose taste is clear and consistent, like High-Energy Pop, Chill Lofi, and Deep Intense Rock.
 
-Prompts:  
+Since recomMend scores features based on closeness to the target, a Song can still rank well even if the heavier weighted features do not match.
 
-- User types for which it gives reasonable results  
-- Any patterns you think your scoring captures correctly  
-- Cases where the recommendations matched your intuition  
+recomMEnd also works for new Users who might have little to no matches on genre can still find music via the feature numbers.
 
 ---
 
@@ -80,23 +78,23 @@ When I adjusted the weights to make genre and mood worth fewer points, the top s
 
 ## 8. Future Work  
 
-Ideas for how you would improve the model next.  
+I think there are opportunities for improvement in recomMEnd:
 
-Prompts:  
-
-- Additional features or preferences  
-- Better ways to explain recommendations  
-- Improving diversity among the top results  
-- Handling more complex user tastes  
+* Score on BPM; Tempo can be normalized and scored like the other features in the CSV
+* Recommendation explanations in a more readable/casual manner
+* Expanding Song catalog; a larger catalog means more Users
+* Add features; even a Release Year can help define music taste
 
 ---
 
 ## 9. Personal Reflection  
 
-A few sentences about your experience.  
+I enjoyed learning about the biases and about filter bubbles specifically. I had always noticed that behavior in the YouTube recommendations, but I never knew the term for it.
 
-Prompts:  
+Since all the values were static (and mostly numbers), AI did a good job at consistently explaining exactly how scores were calculated. It was also very good at answering how the results would change _IF_ the weights were changed; since it's all math, there was little to no room for going astray.
 
-- What you learned about recommender systems  
-- Something unexpected or interesting you discovered  
-- How this changed the way you think about music recommendation apps  
+I did have to stop it from writing the entire model card for me. It made suggestions that were then difficult to unthink, which was an unpleasant source of bias in this document itself.
+
+I think it is interesting to see how each of the features was normalized and put on a scale. The numbers alone are easy to quantify, but difficult to feel. However, adding more similar results around a Song adds context and lets the User gauge relativity to another song.
+
+I think the mood concept could use some tweaking to be less match/no-match, so that is what I would try next if extending this project.

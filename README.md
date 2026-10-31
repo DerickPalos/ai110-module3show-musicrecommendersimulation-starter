@@ -2,32 +2,11 @@
 
 ## Project Summary
 
-In this project you will build and explain a small music recommender system.
-
-Your goal is to:
-
-- Represent songs and a user "taste profile" as data
-- Design a scoring rule that turns that data into recommendations
-- Evaluate what your system gets right and wrong
-- Reflect on how this mirrors real world AI recommenders
-
-Replace this paragraph with your own summary of what your version does.
+This recommender will return a list of the top `k` Songs in the dataset that match a particular User profile. This list is ranked based on Score, which is calculated based on the attributes of each song.
 
 ---
 
 ## How The System Works
-
-Explain your design in plain language.
-
-Some prompts to answer:
-
-- What features does each `Song` use in your system
-  - For example: genre, mood, energy, tempo
-- What information does your `UserProfile` store
-- How does your `Recommender` compute a score for each song
-- How do you choose which songs to recommend
-
-You can include a simple diagram or bullet list if helpful.
 
 **Collaborative filtering** recommends songs that were liked by users similar to you. This can reveal surprising matches that may match your own tastes. Since it only looks at what was liked by other users, it does not need any understanding of the content itself. Collaborative filtering can be weak in the beginning as a user's profile grows. It is also susceptible to popularity bias: more popular songs have more data.
 
