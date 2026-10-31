@@ -29,6 +29,29 @@ Some prompts to answer:
 
 You can include a simple diagram or bullet list if helpful.
 
+**Collaborative filtering** recommends songs that were liked by users similar to you. This can reveal surprising matches that may match your own tastes. Since it only looks at what was liked by other users, it does not need any understanding of the content itself. Collaborative filtering can be weak in the beginning as a user's profile grows. It is also susceptible to popularity bias: more popular songs have more data.
+
+**Content-based filtering** recommends songs that are similar to songs you have already liked. Conversely, this method does not need to know about any other users, but it does need to know information about the content. This method is good at handling new and/or niche things. It is susceptible to developing a filter bubble, where more of the same types of content gets recommended because the user keeps watching.
+
+Real-world recommenders use a mix of both.
+
+Each `Song` has features:
+
+* `genre`
+* `mood`
+* `energy`
+* `tempo_bpm`
+* `valence`
+* `danceability`
+* `acousticness`
+
+Each `UserProfile`
+
+* `favorite_genre` - User's favorite genre of Song
+* `favorite_mood` - User's favorite mood of Song
+* `target_energy` - User's preferred Song `energy`
+* `likes_acoustic` - User likes acoustic?
+
 ---
 
 ## Getting Started
