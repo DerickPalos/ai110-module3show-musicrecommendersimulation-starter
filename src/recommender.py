@@ -95,9 +95,9 @@ def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
     score = 0.0
     reasons = []
 
-    # Categorical features: all-or-nothing bonus on an exact match
+    # Categorical features: all-or-nothing bonus on a match (ignoring case and spaces)
     for feature, pref_key in CATEGORICAL_FEATURES.items():
-        if song[feature] == user_prefs[pref_key]:
+        if song[feature].strip().lower() == user_prefs[pref_key].strip().lower():
             points = WEIGHTS[feature]
             score += points
             reasons.append(f"{feature} match ({song[feature]}) +{points:.2f}")
