@@ -108,18 +108,53 @@ You can add more tests in `tests/test_recommender.py`.
 
 ## Sample Recommendation Output
 
-Paste a sample of your recommender's output here as a text block so a reader can see what it produces:
-
 ```
-# e.g.:
-# User profile: genre=indie, mood=chill, energy=low
-# Recommendations:
-#   1. ...
-#   2. ...
-#   3. ...
-```
+User preferences: genre=pop, mood=happy, energy=0.8, valence=0.8, danceability=0.8, acousticness=0.2
 
-**Screenshot or video** *(optional)*: <!-- Insert a screenshot or demo video link here -->
+Top recommendations
+============================================================
+
+1. Sunrise City  |  Score: 5.92
+------------------------------------------------------------
+   - genre match (pop) +1.50
+   - mood match (happy) +1.00
+   - energy 0.82 vs target 0.80 +1.47
+   - valence 0.84 vs target 0.80 +0.96
+   - danceability 0.79 vs target 0.80 +0.49
+   - acousticness 0.18 vs target 0.20 +0.49
+
+2. Sugar Rush Parade  |  Score: 4.70
+------------------------------------------------------------
+   - genre match (pop) +1.50
+   - energy 0.88 vs target 0.80 +1.38
+   - valence 0.90 vs target 0.80 +0.90
+   - danceability 0.85 vs target 0.80 +0.48
+   - acousticness 0.08 vs target 0.20 +0.44
+
+3. Gym Hero  |  Score: 4.66
+------------------------------------------------------------
+   - genre match (pop) +1.50
+   - energy 0.93 vs target 0.80 +1.30
+   - valence 0.77 vs target 0.80 +0.97
+   - danceability 0.88 vs target 0.80 +0.46
+   - acousticness 0.05 vs target 0.20 +0.42
+
+4. Last Slow Dance  |  Score: 4.62
+------------------------------------------------------------
+   - genre match (pop) +1.50
+   - energy 0.68 vs target 0.80 +1.32
+   - valence 0.66 vs target 0.80 +0.86
+   - danceability 0.72 vs target 0.80 +0.46
+   - acousticness 0.25 vs target 0.20 +0.47
+
+5. Rooftop Lights  |  Score: 4.34
+------------------------------------------------------------
+   - mood match (happy) +1.00
+   - energy 0.76 vs target 0.80 +1.44
+   - valence 0.81 vs target 0.80 +0.99
+   - danceability 0.82 vs target 0.80 +0.49
+   - acousticness 0.35 vs target 0.20 +0.43
+```
 
 ---
 

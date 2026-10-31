@@ -2,48 +2,47 @@
 
 ## 1. Model Name  
 
-Give your model a short, descriptive name.  
-Example: **VibeFinder 1.0**  
+**recomMEnd 1.0**
 
 ---
 
 ## 2. Intended Use  
 
-Describe what your recommender is designed to do and who it is for. 
+recomMEnd is a mock music recommender meant to illustrate real-world recommender behavior at a smaller, local scale.
 
-Prompts:  
-
-- What kind of recommendations does it generate  
-- What assumptions does it make about the user  
-- Is this for real users or classroom exploration  
+When a User has set their preferences, recomMEnd will generate recommendations from its bank of known Songs. Each Song will have a Score; the higher the Score, the more likely it is that the User will like the recommended Song. recomMEnd will also report the _reasons_ a Song was recommended.
 
 ---
 
 ## 3. How the Model Works  
 
-Explain your scoring approach in simple language.  
+Each Song has a few different attributes:
 
-Prompts:  
+* Genre (e.g., Pop, Rock, Jazz, etc.)
+* Mood (e.g., Happy, Sad, Relaxed, etc.)
+* Energy - How lazy or energetic a song feels
+* Tempo - How slow or fast a song is
+* Valence - How sad or happy a song feels
+* Danceability - How danceable a song is
+* Acousticness - The percentage of acoustic instruments in the Song
 
-- What features of each song are used (genre, energy, mood, etc.)  
-- What user preferences are considered  
-- How does the model turn those into a score  
-- What changes did you make from the starter logic  
+Based on User preferences, recomMEnd will assign a score to each Song in its bank of known Songs. Genre and Energy are the most important and affect a Song's score the most; Valence and Mood are next, followed by Danceability and Acousticness.
 
-Avoid code here. Pretend you are explaining the idea to a friend who does not program.
+The top `k` Songs with the highest score are closest to the User preference and are recommended.
 
 ---
 
 ## 4. Data  
 
-Describe the dataset the model uses.  
+The dataset `songs.csv` contains 50 songs.
 
-Prompts:  
+Each Song has an ID, a Title, an Artist, and a Tempo (BPM).
 
-- How many songs are in the catalog  
-- What genres or moods are represented  
-- Did you add or remove data  
-- Are there parts of musical taste missing in the dataset  
+The catalog spans 16 genres. There are a few large genres (pop, lofi, rock, jazz), a few medium sized genres (ambient, synthwave, indiep pop, hip hop, edm, folk), and a few niche/singleton genres (classical, metal, country, r&b, reggae, blues).
+
+The catalog spans 10 moods. Each mood has multiple Songs associated with that mood.
+
+Each Song also has Energy, Valence, Danceability, and Acousticness, all in the range [0.0-1.0].
 
 ---
 
