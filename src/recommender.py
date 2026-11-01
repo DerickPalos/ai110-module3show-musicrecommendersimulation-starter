@@ -38,6 +38,9 @@ OPTIONAL_FEATURES = {
     "tempo_bpm": "target_tempo_bpm",
 }
 
+# Points subtracted for each song by the same artist already in the results
+ARTIST_REPEAT_PENALTY = 0.5
+
 # Fixed (min, max) bounds used to scale optional features to 0-1
 RANGES = {
     "popularity": (0, 100),
@@ -98,16 +101,9 @@ class Recommender:
 
     def recommend(self, user: UserProfile, k: int = 5) -> List[Song]:
         """Return the top k songs for the user, highest score first."""
-        user_prefs = asdict(user)
-        scored = [
-            (song, score_song(user_prefs, asdict(song))[0])
-            for song in self.songs
-            if is_allowed(user_prefs, asdict(song))
-        ]
-
-        # sort() is stable, so tied scores keep their original order
-        scored.sort(key=lambda item: item[1], reverse=True)
-        return [song for song, _ in scored[:k]]
+        ranked = recommend_songs(asdict(user), [asdict(s) for s in self.songs], k)
+        by_id = {song.id: song for song in self.songs}
+        return [by_id[song["id"]] for song, _, _ in ranked]
 
     def explain_recommendation(self, user: UserProfile, song: Song) -> str:
         """Return the song's total score and per-feature breakdown as text."""
@@ -181,16 +177,37 @@ def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
 
     return score, reasons
 
-def recommend_songs(user_prefs: Dict, songs: List[Dict], k: int = 5) -> List[Tuple[Dict, float, str]]:
-    """Return the top k (song, score, explanation) tuples, highest score first."""
-    scored = []
+def recommend_songs(
+    user_prefs: Dict,
+    songs: List[Dict],
+    k: int = 5,
+    artist_penalty: float = ARTIST_REPEAT_PENALTY,
+) -> List[Tuple[Dict, float, str]]:
+    """Return the top k (song, score, explanation), re-ranked to limit repeat artists."""
+    candidates = []
     for song in songs:
         if not is_allowed(user_prefs, song):
             continue
         score, reasons = score_song(user_prefs, song)
-        explanation = "; ".join(reasons)
-        scored.append((song, score, explanation))
+        candidates.append((song, score, reasons))
 
-    # sort() is stable, so tied scores keep their CSV order
-    scored.sort(key=lambda item: item[1], reverse=True)
-    return scored[:k]
+    # Greedy re-ranking: each pick is the best song after subtracting a penalty for
+    # every song by the same artist already picked. A song's first appearance by an
+    # artist is never penalized, so an artist's best song always competes at full score.
+    selected = []
+    picked_per_artist: Dict[str, int] = {}
+    while candidates and len(selected) < k:
+        best_index, best_adjusted, best_penalty = 0, float("-inf"), 0.0
+        for i, (song, score, _) in enumerate(candidates):
+            penalty = artist_penalty * picked_per_artist.get(song["artist"], 0)
+            # strict ">" keeps the earlier (higher-scored, then CSV-order) song on ties
+            if score - penalty > best_adjusted:
+                best_index, best_adjusted, best_penalty = i, score - penalty, penalty
+
+        song, _, reasons = candidates.pop(best_index)
+        if best_penalty > 0:
+            reasons = reasons + [f"artist repeat ({song['artist']}) -{best_penalty:.2f}"]
+        picked_per_artist[song["artist"]] = picked_per_artist.get(song["artist"], 0) + 1
+        selected.append((song, best_adjusted, "; ".join(reasons)))
+
+    return selected
