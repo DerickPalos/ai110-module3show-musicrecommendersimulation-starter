@@ -50,6 +50,29 @@ PROFILES = {
         "target_danceability": 0.5,
         "target_acousticness": 0.1,
     },
+    # Profiles that use the optional features and the explicit filter
+    "Clean Hip Hop (No Explicit)": {
+        "favorite_genre": "hip hop",
+        "favorite_mood": "intense",
+        "target_energy": 0.82,
+        "target_valence": 0.45,
+        "target_danceability": 0.9,
+        "target_acousticness": 0.1,
+        "allow_explicit": False,
+    },
+    "Mellow Instrumental Study": {
+        "favorite_genre": "lofi",
+        "favorite_mood": "focused",
+        "target_energy": 0.4,
+        "target_valence": 0.55,
+        "target_danceability": 0.6,
+        "target_acousticness": 0.8,
+        "target_instrumentalness": 0.9,
+        "target_tempo_bpm": 80,
+        "target_duration_sec": 150,
+        "target_popularity": 55,
+        "target_release_decade": 2020,
+    },
 }
 
 
@@ -59,14 +82,11 @@ def print_recommendations(name: str, user_prefs: dict, songs: list) -> None:
 
     print("\n" + "#" * 60)
     print(f"Profile: {name}")
-    print(
-        f"User preferences: genre={user_prefs['favorite_genre']}, "
-        f"mood={user_prefs['favorite_mood']}, "
-        f"energy={user_prefs['target_energy']}, "
-        f"valence={user_prefs['target_valence']}, "
-        f"danceability={user_prefs['target_danceability']}, "
-        f"acousticness={user_prefs['target_acousticness']}"
+    shown = ", ".join(
+        f"{key.removeprefix('favorite_').removeprefix('target_')}={value}"
+        for key, value in user_prefs.items()
     )
+    print(f"User preferences: {shown}")
     print("\nTop recommendations")
     print("=" * 60)
     for rank, (song, score, explanation) in enumerate(recommendations, start=1):

@@ -1,51 +1,51 @@
-id,title,artist,genre,mood,energy,tempo_bpm,valence,danceability,acousticness
-1,Sunrise City,Neon Echo,pop,happy,0.82,118,0.84,0.79,0.18
-2,Midnight Coding,LoRoom,lofi,chill,0.42,78,0.56,0.62,0.71
-3,Storm Runner,Voltline,rock,intense,0.91,152,0.48,0.66,0.10
-4,Library Rain,Paper Lanterns,lofi,chill,0.35,72,0.60,0.58,0.86
-5,Gym Hero,Max Pulse,pop,intense,0.93,132,0.77,0.88,0.05
-6,Spacewalk Thoughts,Orbit Bloom,ambient,chill,0.28,60,0.65,0.41,0.92
-7,Coffee Shop Stories,Slow Stereo,jazz,relaxed,0.37,90,0.71,0.54,0.89
-8,Night Drive Loop,Neon Echo,synthwave,moody,0.75,110,0.49,0.73,0.22
-9,Focus Flow,LoRoom,lofi,focused,0.40,80,0.59,0.60,0.78
-10,Rooftop Lights,Indigo Parade,indie pop,happy,0.76,124,0.81,0.82,0.35
-11,Thunder Alley,Voltline,rock,intense,0.88,146,0.45,0.60,0.08
-12,Garage Door Anthem,Brickyard Kids,rock,energetic,0.86,138,0.68,0.58,0.15
-13,Gravel and Rain,Brickyard Kids,rock,moody,0.62,102,0.35,0.52,0.30
-14,Sunburnt Highway,Dusty Parade,rock,happy,0.74,124,0.80,0.66,0.28
-15,Heartbreak Radio,Cass Rivera,pop,sad,0.45,98,0.28,0.58,0.35
-16,Sugar Rush Parade,Hana Bloom,pop,energetic,0.88,126,0.90,0.85,0.08
-17,Last Slow Dance,Cass Rivera,pop,romantic,0.68,108,0.66,0.72,0.25
-18,Rainy Window Tape,Paper Lanterns,lofi,relaxed,0.33,70,0.58,0.55,0.82
-19,Study Session Beats,LoRoom,lofi,focused,0.45,84,0.55,0.64,0.68
-20,Tidal Drift,Orbit Bloom,ambient,peaceful,0.18,56,0.52,0.28,0.94
-21,Deep Work Drone,Orbit Bloom,ambient,focused,0.30,64,0.48,0.33,0.88
-22,Abandoned Station,Static Monk,ambient,moody,0.35,66,0.30,0.30,0.80
-23,Velvet Sax Lounge,Miles Hartwell,jazz,romantic,0.45,88,0.62,0.60,0.80
-24,Sunday Brush Trio,Miles Hartwell,jazz,relaxed,0.30,78,0.70,0.48,0.90
-25,After Hours Quartet,Slow Stereo,jazz,moody,0.52,96,0.38,0.55,0.76
-26,Quiet Piano Interlude,Slow Stereo,jazz,peaceful,0.25,68,0.55,0.35,0.93
-27,Turbo Skyline,Neon Echo,synthwave,energetic,0.85,128,0.70,0.78,0.10
-28,Digital Heartbreak,Neon Echo,synthwave,sad,0.58,100,0.30,0.62,0.18
-29,Compile Time,Vector Nine,synthwave,focused,0.62,112,0.50,0.66,0.15
-30,Bedroom Window,Indigo Parade,indie pop,sad,0.40,92,0.32,0.52,0.60
-31,Polaroid Summer,Indigo Parade,indie pop,romantic,0.56,106,0.72,0.66,0.45
-32,Festival Hands,Velvet Kites,indie pop,energetic,0.80,132,0.82,0.74,0.25
-33,Concrete Crown,Kid Meridian,hip hop,intense,0.82,94,0.45,0.90,0.10
-34,Block Party Sunday,Kid Meridian,hip hop,happy,0.68,96,0.84,0.87,0.18
-35,Late Night Verses,Kid Meridian,hip hop,chill,0.50,86,0.55,0.78,0.30
-36,Alley Cat Cipher,Rhyme Orbit,hip hop,moody,0.60,90,0.35,0.80,0.15
-37,Pulse Cathedral,Helix Drive,edm,energetic,0.95,128,0.88,0.92,0.03
-38,Festival Fireworks,Helix Drive,edm,happy,0.88,130,0.85,0.83,0.04
-39,Breakneck Orbit,Vector Nine,edm,intense,0.96,150,0.40,0.70,0.03
-40,Sunset Deep House,Marlow Grid,edm,chill,0.58,118,0.66,0.82,0.12
-41,Porch Light Lullaby,Willow & Wren,folk,sad,0.24,68,0.20,0.35,0.95
-42,Lighthouse Keeper,Willow & Wren,folk,peaceful,0.30,74,0.60,0.38,0.93
-43,Barnburner Breakdown,Hollis Creek,folk,happy,0.58,120,0.86,0.70,0.82
-44,Hammock Afternoon,Hollis Creek,folk,relaxed,0.46,84,0.72,0.54,0.85
-45,Moonlit Sonata No. 3,Elena Voss,classical,peaceful,0.15,56,0.43,0.22,0.97
-46,Ashes Fall,Iron Hollow,metal,intense,0.97,168,0.22,0.45,0.04
-47,Dust Road Jubilee,Hollis Creek,country,peaceful,0.35,92,0.70,0.50,0.80
-48,Velvet Hours,Marisol Vane,r&b,romantic,0.52,96,0.68,0.76,0.40
-49,Island Sway,Tide & Ember,reggae,chill,0.45,80,0.80,0.84,0.45
-50,Blue Basement,Otis Calloway,blues,sad,0.38,70,0.28,0.48,0.68
+id,title,artist,genre,mood,energy,tempo_bpm,valence,danceability,acousticness,popularity,release_decade,duration_sec,instrumentalness,explicit
+1,Sunrise City,Neon Echo,pop,happy,0.82,118,0.84,0.79,0.18,84,2020,201,0.00,0
+2,Midnight Coding,LoRoom,lofi,chill,0.42,78,0.56,0.62,0.71,61,2020,148,0.82,0
+3,Storm Runner,Voltline,rock,intense,0.91,152,0.48,0.66,0.10,66,2010,243,0.03,0
+4,Library Rain,Paper Lanterns,lofi,chill,0.35,72,0.60,0.58,0.86,58,2020,132,0.88,0
+5,Gym Hero,Max Pulse,pop,intense,0.93,132,0.77,0.88,0.05,88,2010,189,0.00,0
+6,Spacewalk Thoughts,Orbit Bloom,ambient,chill,0.28,60,0.65,0.41,0.92,42,2010,312,0.94,0
+7,Coffee Shop Stories,Slow Stereo,jazz,relaxed,0.37,90,0.71,0.54,0.89,49,2000,236,0.46,0
+8,Night Drive Loop,Neon Echo,synthwave,moody,0.75,110,0.49,0.73,0.22,63,2020,227,0.58,0
+9,Focus Flow,LoRoom,lofi,focused,0.40,80,0.59,0.60,0.78,57,2020,156,0.86,0
+10,Rooftop Lights,Indigo Parade,indie pop,happy,0.76,124,0.81,0.82,0.35,72,2010,208,0.00,0
+11,Thunder Alley,Voltline,rock,intense,0.88,146,0.45,0.60,0.08,69,2000,251,0.02,0
+12,Garage Door Anthem,Brickyard Kids,rock,energetic,0.86,138,0.68,0.58,0.15,71,2000,217,0.00,0
+13,Gravel and Rain,Brickyard Kids,rock,moody,0.62,102,0.35,0.52,0.30,52,1990,262,0.05,0
+14,Sunburnt Highway,Dusty Parade,rock,happy,0.74,124,0.80,0.66,0.28,64,1990,228,0.01,0
+15,Heartbreak Radio,Cass Rivera,pop,sad,0.45,98,0.28,0.58,0.35,76,2010,214,0.00,0
+16,Sugar Rush Parade,Hana Bloom,pop,energetic,0.88,126,0.90,0.85,0.08,86,2020,176,0.00,0
+17,Last Slow Dance,Cass Rivera,pop,romantic,0.68,108,0.66,0.72,0.25,79,2010,245,0.00,0
+18,Rainy Window Tape,Paper Lanterns,lofi,relaxed,0.33,70,0.58,0.55,0.82,55,2020,141,0.84,0
+19,Study Session Beats,LoRoom,lofi,focused,0.45,84,0.55,0.64,0.68,60,2020,163,0.80,0
+20,Tidal Drift,Orbit Bloom,ambient,peaceful,0.18,56,0.52,0.28,0.94,38,2010,348,0.96,0
+21,Deep Work Drone,Orbit Bloom,ambient,focused,0.30,64,0.48,0.33,0.88,35,2020,421,0.97,0
+22,Abandoned Station,Static Monk,ambient,moody,0.35,66,0.30,0.30,0.80,33,2000,389,0.93,0
+23,Velvet Sax Lounge,Miles Hartwell,jazz,romantic,0.45,88,0.62,0.60,0.80,46,1970,267,0.90,0
+24,Sunday Brush Trio,Miles Hartwell,jazz,relaxed,0.30,78,0.70,0.48,0.90,41,1960,254,0.92,0
+25,After Hours Quartet,Slow Stereo,jazz,moody,0.52,96,0.38,0.55,0.76,44,1980,288,0.85,0
+26,Quiet Piano Interlude,Slow Stereo,jazz,peaceful,0.25,68,0.55,0.35,0.93,40,1990,223,0.97,0
+27,Turbo Skyline,Neon Echo,synthwave,energetic,0.85,128,0.70,0.78,0.10,70,1980,205,0.10,0
+28,Digital Heartbreak,Neon Echo,synthwave,sad,0.58,100,0.30,0.62,0.18,67,2010,238,0.06,0
+29,Compile Time,Vector Nine,synthwave,focused,0.62,112,0.50,0.66,0.15,54,2020,232,0.70,0
+30,Bedroom Window,Indigo Parade,indie pop,sad,0.40,92,0.32,0.52,0.60,62,2010,197,0.00,0
+31,Polaroid Summer,Indigo Parade,indie pop,romantic,0.56,106,0.72,0.66,0.45,68,2010,211,0.00,0
+32,Festival Hands,Velvet Kites,indie pop,energetic,0.80,132,0.82,0.74,0.25,74,2020,193,0.00,0
+33,Concrete Crown,Kid Meridian,hip hop,intense,0.82,94,0.45,0.90,0.10,73,2010,219,0.00,1
+34,Block Party Sunday,Kid Meridian,hip hop,happy,0.68,96,0.84,0.87,0.18,77,2000,207,0.00,0
+35,Late Night Verses,Kid Meridian,hip hop,chill,0.50,86,0.55,0.78,0.30,65,2010,233,0.00,1
+36,Alley Cat Cipher,Rhyme Orbit,hip hop,moody,0.60,90,0.35,0.80,0.15,59,1990,226,0.01,1
+37,Pulse Cathedral,Helix Drive,edm,energetic,0.95,128,0.88,0.92,0.03,81,2010,218,0.35,0
+38,Festival Fireworks,Helix Drive,edm,happy,0.88,130,0.85,0.83,0.04,83,2010,202,0.20,0
+39,Breakneck Orbit,Vector Nine,edm,intense,0.96,150,0.40,0.70,0.03,56,2020,247,0.55,0
+40,Sunset Deep House,Marlow Grid,edm,chill,0.58,118,0.66,0.82,0.12,64,2020,305,0.62,0
+41,Porch Light Lullaby,Willow & Wren,folk,sad,0.24,68,0.20,0.35,0.95,47,1970,186,0.04,0
+42,Lighthouse Keeper,Willow & Wren,folk,peaceful,0.30,74,0.60,0.38,0.93,45,2000,215,0.08,0
+43,Barnburner Breakdown,Hollis Creek,folk,happy,0.58,120,0.86,0.70,0.82,53,2010,192,0.02,0
+44,Hammock Afternoon,Hollis Creek,folk,relaxed,0.46,84,0.72,0.54,0.85,48,1990,241,0.15,0
+45,Moonlit Sonata No. 3,Elena Voss,classical,peaceful,0.15,56,0.43,0.22,0.97,51,1970,396,0.99,0
+46,Ashes Fall,Iron Hollow,metal,intense,0.97,168,0.22,0.45,0.04,57,1980,281,0.02,1
+47,Dust Road Jubilee,Hollis Creek,country,peaceful,0.35,92,0.70,0.50,0.80,50,1990,226,0.03,0
+48,Velvet Hours,Marisol Vane,r&b,romantic,0.52,96,0.68,0.76,0.40,69,1990,258,0.00,0
+49,Island Sway,Tide & Ember,reggae,chill,0.45,80,0.80,0.84,0.45,60,1980,249,0.07,0
+50,Blue Basement,Otis Calloway,blues,sad,0.38,70,0.28,0.48,0.68,43,1960,274,0.10,0
