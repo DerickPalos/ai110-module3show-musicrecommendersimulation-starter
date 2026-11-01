@@ -55,12 +55,26 @@ What I checked in the output:
 
 **Which design pattern did you use?**
 
-<!-- e.g., Strategy, Factory, Observer, etc. -->
+The Strategy pattern. Each ranking mode (Balanced, Genre-First, Mood-First, Energy-Focused) is a `ScoringStrategy` object, and the recommender can use any of them without changing its own code. I pick which one to use each time I run the program.
 
 **How did AI help you brainstorm or implement it?**
 
-<!-- Describe the conversation or suggestions that led to your decision -->
+I told the AI I wanted multiple scoring modes (Genre-First, Mood-First, and Energy-Focused) and that I should be able to pick one in `main.py` each time I run it. The challenge also said to brainstorm a design pattern like Strategy that keeps the code modular, so I gave it `recommender.py` and asked it to lay that out.
+
+The AI compared a few ways to build it:
+- An `if/elif` on a mode name inside `score_song`. This is the quickest to write, but every new mode means editing the scoring function, and the mode logic gets mixed in with the scoring steps.
+- One class per mode, each with its own `score` method. This is the textbook version of Strategy, but our three modes run the exact same steps (match genre and mood, then score closeness) and only differ in how many points each feature is worth, so three classes would mostly repeat the same code.
+- A strategy as a small object that just holds a name, a description, and a set of weights. `score_song` takes that object and reads its weights. This keeps the pattern (modes are swappable objects with the same interface) without copying the scoring code.
+
+We went with the third option because the only thing that differs between modes is the weights, which also made it easy to see and tune them side by side. The AI also pointed out two choices I hadn't thought about. First, it kept the original weights as a fourth "Balanced" mode that's the default, so running `python -m src.main` with no flag still gives the exact same results as before and the old tests keep passing. Second, each mode starts from the same base weights and only changes the features it cares about (for example, Genre-First raises the genre weight to 3.0 and lowers mood and energy), so a mode can't accidentally leave a weight out.
+
+To check that the modes did what their names say, the AI ran the five main profiles through all four modes before I settled on the numbers. Mood-First returned mostly songs with the right mood, Genre-First kept the results inside the genre (Chill Lofi got five lofi songs), and Energy-Focused ignored the labels and fixed the Conflicted profile that picks the slow song.
 
 **How does the pattern appear in your final code?**
 
-<!-- Point to the relevant class or method -->
+- `ScoringStrategy` in `src/recommender.py` is the strategy itself: a frozen dataclass with a `name`, a `description`, and a `weights` dictionary.
+- `STRATEGIES` holds the four modes by name (`balanced`, `genre-first`, `mood-first`, `energy-focused`), and `DEFAULT_STRATEGY` is Balanced.
+- `score_song(user_prefs, song, strategy)` is where the strategy gets used: it reads every weight from `strategy.weights` instead of a fixed global, so it doesn't know or care which mode it's in.
+- `recommend_songs(..., strategy=...)` and the `Recommender` class both pass the strategy down to `score_song`.
+- `src/main.py` is where I choose the mode, with a `--mode` flag. For example, `python -m src.main --mode mood-first` runs everything in Mood-First mode, and leaving the flag off uses Balanced. The mode name and description are printed at the top of the output, and an invalid name gives an error that lists the choices.
+- `tests/test_recommender.py` has tests that every mode defines all the weights, that the default matches Balanced, and that Genre-First, Mood-First, and Energy-Focused each rank a pair of test songs the way their names say they should.

@@ -4,9 +4,10 @@ Command line runner for the Music Recommender Simulation.
 This file helps you quickly run and test your recommender.
 """
 
+import argparse
 import textwrap
 
-from src.recommender import load_songs, recommend_songs
+from src.recommender import STRATEGIES, ScoringStrategy, load_songs, recommend_songs
 
 
 # Keys match the UserProfile field names
@@ -106,9 +107,11 @@ def format_table(headers: list, rows: list, right_aligned: tuple = ()) -> str:
     return "\n".join(out)
 
 
-def print_recommendations(name: str, user_prefs: dict, songs: list) -> list:
+def print_recommendations(
+    name: str, user_prefs: dict, songs: list, strategy: ScoringStrategy
+) -> list:
     """Print a profile's top 5 songs as a table with reasons, and return them."""
-    recommendations = recommend_songs(user_prefs, songs, k=5)
+    recommendations = recommend_songs(user_prefs, songs, k=5, strategy=strategy)
 
     print("\n" + "#" * 60)
     print(f"Profile: {name}")
@@ -127,24 +130,41 @@ def print_recommendations(name: str, user_prefs: dict, songs: list) -> list:
     return recommendations
 
 
-def print_summary(top_picks: dict) -> None:
+def print_summary(top_picks: dict, strategy: ScoringStrategy) -> None:
     """Print a one-row-per-profile table of each profile's #1 song."""
     rows = [
         [name, song["title"], song["genre"], song["mood"], f"{score:.2f}"]
         for name, (song, score, _) in top_picks.items()
     ]
     print("\n" + "#" * 60)
-    print("Summary: top pick for each profile\n")
+    print(f"Summary: top pick for each profile ({strategy.name} mode)\n")
     print(format_table(["Profile", "Top pick", "Genre", "Mood", "Score"], rows, right_aligned=(4,)))
     print()
 
 
+def parse_args() -> argparse.Namespace:
+    """Read the scoring mode from the command line."""
+    parser = argparse.ArgumentParser(description="Music Recommender Simulation")
+    parser.add_argument(
+        "--mode",
+        choices=list(STRATEGIES),
+        default="balanced",
+        help="scoring mode: " + "; ".join(f"{k} = {v.description}" for k, v in STRATEGIES.items()),
+    )
+    return parser.parse_args()
+
+
 def main() -> None:
+    strategy = STRATEGIES[parse_args().mode]
     songs = load_songs("data/songs.csv")
+
+    print(f"Scoring mode: {strategy.name}")
+    print(textwrap.fill(strategy.description, width=80))
+
     top_picks = {}
     for name, user_prefs in PROFILES.items():
-        top_picks[name] = print_recommendations(name, user_prefs, songs)[0]
-    print_summary(top_picks)
+        top_picks[name] = print_recommendations(name, user_prefs, songs, strategy)[0]
+    print_summary(top_picks, strategy)
 
 
 if __name__ == "__main__":

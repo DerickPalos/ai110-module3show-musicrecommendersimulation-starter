@@ -41,6 +41,39 @@ OPTIONAL_FEATURES = {
 # Points subtracted for each song by the same artist already in the results
 ARTIST_REPEAT_PENALTY = 0.5
 
+@dataclass(frozen=True)
+class ScoringStrategy:
+    """A named set of feature weights; swapping strategies changes how songs rank."""
+    name: str
+    description: str
+    weights: Dict[str, float]
+
+# Ranking modes (Strategy pattern): same scoring steps, different weights.
+# Each mode boosts its own feature and trims the others; optional-feature weights are shared.
+STRATEGIES = {
+    "balanced": ScoringStrategy(
+        "Balanced",
+        "Genre, mood and energy all count; the default.",
+        WEIGHTS,
+    ),
+    "genre-first": ScoringStrategy(
+        "Genre-First",
+        "A genre match dominates; mood and energy only refine within the genre.",
+        {**WEIGHTS, "genre": 3.0, "mood": 0.75, "energy": 1.0, "valence": 0.75},
+    ),
+    "mood-first": ScoringStrategy(
+        "Mood-First",
+        "A mood match dominates, with valence backing it up; genre matters less.",
+        {**WEIGHTS, "genre": 0.75, "mood": 3.0, "energy": 1.0, "valence": 1.5},
+    ),
+    "energy-focused": ScoringStrategy(
+        "Energy-Focused",
+        "Closeness in energy dominates; genre and mood barely matter.",
+        {**WEIGHTS, "genre": 0.5, "mood": 0.5, "energy": 3.5, "valence": 0.75},
+    ),
+}
+DEFAULT_STRATEGY = STRATEGIES["balanced"]
+
 # Fixed (min, max) bounds used to scale optional features to 0-1
 RANGES = {
     "popularity": (0, 100),
@@ -95,19 +128,22 @@ class UserProfile:
 class Recommender:
     """Object-oriented recommender that ranks a list of Songs for a UserProfile."""
 
-    def __init__(self, songs: List[Song]):
-        """Store the song catalog to recommend from."""
+    def __init__(self, songs: List[Song], strategy: ScoringStrategy = DEFAULT_STRATEGY):
+        """Store the song catalog and the scoring strategy to rank it with."""
         self.songs = songs
+        self.strategy = strategy
 
     def recommend(self, user: UserProfile, k: int = 5) -> List[Song]:
         """Return the top k songs for the user, highest score first."""
-        ranked = recommend_songs(asdict(user), [asdict(s) for s in self.songs], k)
+        ranked = recommend_songs(
+            asdict(user), [asdict(s) for s in self.songs], k, strategy=self.strategy
+        )
         by_id = {song.id: song for song in self.songs}
         return [by_id[song["id"]] for song, _, _ in ranked]
 
     def explain_recommendation(self, user: UserProfile, song: Song) -> str:
         """Return the song's total score and per-feature breakdown as text."""
-        score, reasons = score_song(asdict(user), asdict(song))
+        score, reasons = score_song(asdict(user), asdict(song), self.strategy)
         return f"Score {score:.2f}: " + "; ".join(reasons)
 
 def load_songs(csv_path: str) -> List[Dict]:
@@ -143,22 +179,25 @@ def is_allowed(user_prefs: Dict, song: Dict) -> bool:
     """Return False if the user excludes explicit songs and this song is explicit."""
     return user_prefs.get("allow_explicit", True) or not song.get("explicit", False)
 
-def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
+def score_song(
+    user_prefs: Dict, song: Dict, strategy: ScoringStrategy = DEFAULT_STRATEGY
+) -> Tuple[float, List[str]]:
     """Score one song against user preferences, returning (score, reasons)."""
+    weights = strategy.weights
     score = 0.0
     reasons = []
 
     # Categorical features: all-or-nothing bonus on a match (ignoring case and spaces)
     for feature, pref_key in CATEGORICAL_FEATURES.items():
         if song[feature].strip().lower() == user_prefs[pref_key].strip().lower():
-            points = WEIGHTS[feature]
+            points = weights[feature]
             score += points
             reasons.append(f"{feature} match ({song[feature]}) +{points:.2f}")
 
     # Continuous features: weight * (1 - distance from target), partial credit
     for feature, pref_key in CONTINUOUS_FEATURES.items():
         similarity = 1.0 - abs(song[feature] - user_prefs[pref_key])
-        points = WEIGHTS[feature] * similarity
+        points = weights[feature] * similarity
         score += points
         reasons.append(
             f"{feature} {song[feature]:.2f} vs target {user_prefs[pref_key]:.2f} +{points:.2f}"
@@ -171,7 +210,7 @@ def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
         if target is None or value is None:
             continue
         similarity = 1.0 - abs(normalize(feature, value) - normalize(feature, target))
-        points = WEIGHTS[feature] * similarity
+        points = weights[feature] * similarity
         score += points
         reasons.append(f"{feature} {value:g} vs target {target:g} +{points:.2f}")
 
@@ -182,13 +221,14 @@ def recommend_songs(
     songs: List[Dict],
     k: int = 5,
     artist_penalty: float = ARTIST_REPEAT_PENALTY,
+    strategy: ScoringStrategy = DEFAULT_STRATEGY,
 ) -> List[Tuple[Dict, float, str]]:
     """Return the top k (song, score, explanation), re-ranked to limit repeat artists."""
     candidates = []
     for song in songs:
         if not is_allowed(user_prefs, song):
             continue
-        score, reasons = score_song(user_prefs, song)
+        score, reasons = score_song(user_prefs, song, strategy)
         candidates.append((song, score, reasons))
 
     # Greedy re-ranking: each pick is the best song after subtracting a penalty for
@@ -200,7 +240,7 @@ def recommend_songs(
         best_index, best_adjusted, best_penalty = 0, float("-inf"), 0.0
         for i, (song, score, _) in enumerate(candidates):
             penalty = artist_penalty * picked_per_artist.get(song["artist"], 0)
-            # strict ">" keeps the earlier (higher-scored, then CSV-order) song on ties
+            # strict ">" keeps the earlier (CSV-order) song on ties
             if score - penalty > best_adjusted:
                 best_index, best_adjusted, best_penalty = i, score - penalty, penalty
 

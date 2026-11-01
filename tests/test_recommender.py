@@ -2,7 +2,8 @@ from dataclasses import asdict
 
 from src.main import format_table
 from src.recommender import (
-    Song, UserProfile, Recommender, WEIGHTS, normalize, recommend_songs, score_song,
+    STRATEGIES, Song, UserProfile, Recommender, WEIGHTS, normalize, recommend_songs,
+    score_song,
 )
 
 def make_small_recommender() -> Recommender:
@@ -153,3 +154,39 @@ def test_zero_artist_penalty_turns_diversity_off():
     songs = [make_song_dict(1, "X", 0.8), make_song_dict(2, "X", 0.73), make_song_dict(3, "Y", 0.6)]
     results = recommend_songs(asdict(make_profile()), songs, k=3, artist_penalty=0)
     assert [song["id"] for song, _, _ in results] == [1, 2, 3]
+
+
+def test_every_strategy_defines_all_weights():
+    for strategy in STRATEGIES.values():
+        assert set(strategy.weights) == set(WEIGHTS)
+
+
+def test_default_strategy_matches_balanced_weights():
+    song = make_song_dict(1, "X", 0.8)
+    prefs = asdict(make_profile())
+    assert score_song(prefs, song) == score_song(prefs, song, STRATEGIES["balanced"])
+
+
+def test_genre_first_and_mood_first_rank_the_same_songs_differently():
+    # Song 1 matches only genre; song 2 matches only mood; everything else is equal
+    genre_only = {**make_song_dict(1, "X", 0.8), "mood": "sad"}
+    mood_only = {**make_song_dict(2, "Y", 0.8), "genre": "rock"}
+    prefs = asdict(make_profile())
+
+    top_genre_first = recommend_songs(prefs, [mood_only, genre_only], 1, strategy=STRATEGIES["genre-first"])
+    top_mood_first = recommend_songs(prefs, [genre_only, mood_only], 1, strategy=STRATEGIES["mood-first"])
+    assert top_genre_first[0][0]["id"] == 1
+    assert top_mood_first[0][0]["id"] == 2
+
+
+def test_energy_focused_prefers_energy_match_over_genre_and_mood():
+    label_match = {**make_song_dict(1, "X", 0.2)}
+    energy_match = {**make_song_dict(2, "Y", 0.8), "genre": "rock", "mood": "sad"}
+    prefs = asdict(make_profile())
+    top = recommend_songs(prefs, [label_match, energy_match], 1, strategy=STRATEGIES["energy-focused"])
+    assert top[0][0]["id"] == 2
+
+
+def test_recommender_uses_its_strategy():
+    rec = Recommender(make_small_recommender().songs, strategy=STRATEGIES["mood-first"])
+    assert rec.strategy.name == "Mood-First"
