@@ -1,5 +1,6 @@
 from dataclasses import asdict
 
+from src.main import format_table
 from src.recommender import Song, UserProfile, Recommender, WEIGHTS, normalize, score_song
 
 def make_small_recommender() -> Recommender:
@@ -105,3 +106,11 @@ def test_allow_explicit_false_filters_explicit_songs():
     rec.songs[0].explicit = True
     results = rec.recommend(make_profile(allow_explicit=False), k=5)
     assert [s.title for s in results] == ["Chill Lofi Loop"]
+
+
+def test_format_table_aligns_multiline_cells():
+    table = format_table(["#", "Why"], [[1, "first\nsecond"], [2, "x"]], right_aligned=(0,))
+    lines = table.split("\n")
+    assert len({len(line) for line in lines}) == 1
+    assert "| 1 | first  |" in lines
+    assert "|   | second |" in lines

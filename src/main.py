@@ -4,6 +4,8 @@ Command line runner for the Music Recommender Simulation.
 This file helps you quickly run and test your recommender.
 """
 
+import textwrap
+
 from src.recommender import load_songs, recommend_songs
 
 
@@ -76,8 +78,36 @@ PROFILES = {
 }
 
 
-def print_recommendations(name: str, user_prefs: dict, songs: list) -> None:
-    """Print a profile's preferences and its top 5 ranked songs with reasons."""
+def format_table(headers: list, rows: list, right_aligned: tuple = ()) -> str:
+    """Return an ASCII grid table; cells may contain newlines for multi-line text."""
+    columns = list(zip(headers, *rows))
+    widths = [
+        max(len(line) for cell in column for line in str(cell).split("\n"))
+        for column in columns
+    ]
+    border = "+" + "+".join("-" * (width + 2) for width in widths) + "+"
+
+    def render(cells: list) -> list:
+        split = [str(cell).split("\n") for cell in cells]
+        height = max(len(lines) for lines in split)
+        rendered = []
+        for i in range(height):
+            parts = []
+            for col, lines in enumerate(split):
+                text = lines[i] if i < len(lines) else ""
+                parts.append(text.rjust(widths[col]) if col in right_aligned else text.ljust(widths[col]))
+            rendered.append("| " + " | ".join(parts) + " |")
+        return rendered
+
+    out = [border, *render(headers), border.replace("-", "=")]
+    for row in rows:
+        out += render(row)
+        out.append(border)
+    return "\n".join(out)
+
+
+def print_recommendations(name: str, user_prefs: dict, songs: list) -> list:
+    """Print a profile's top 5 songs as a table with reasons, and return them."""
     recommendations = recommend_songs(user_prefs, songs, k=5)
 
     print("\n" + "#" * 60)
@@ -86,22 +116,35 @@ def print_recommendations(name: str, user_prefs: dict, songs: list) -> None:
         f"{key.removeprefix('favorite_').removeprefix('target_')}={value}"
         for key, value in user_prefs.items()
     )
-    print(f"User preferences: {shown}")
-    print("\nTop recommendations")
-    print("=" * 60)
+    print(textwrap.fill(f"User preferences: {shown}", width=80, subsequent_indent="  ") + "\n")
+
+    rows = []
     for rank, (song, score, explanation) in enumerate(recommendations, start=1):
-        print(f"\n{rank}. {song['title']}  |  Score: {score:.2f}")
-        print("-" * 60)
         # recommend_songs joins the scoring reasons with "; ", so split them back out
-        for reason in explanation.split("; "):
-            print(f"   - {reason}")
+        reasons = "\n".join(explanation.split("; "))
+        rows.append([rank, f"{song['title']}\nby {song['artist']}", f"{score:.2f}", reasons])
+    print(format_table(["#", "Song", "Score", "Why it scored this way"], rows, right_aligned=(0, 2)))
+    return recommendations
+
+
+def print_summary(top_picks: dict) -> None:
+    """Print a one-row-per-profile table of each profile's #1 song."""
+    rows = [
+        [name, song["title"], song["genre"], song["mood"], f"{score:.2f}"]
+        for name, (song, score, _) in top_picks.items()
+    ]
+    print("\n" + "#" * 60)
+    print("Summary: top pick for each profile\n")
+    print(format_table(["Profile", "Top pick", "Genre", "Mood", "Score"], rows, right_aligned=(4,)))
     print()
 
 
 def main() -> None:
     songs = load_songs("data/songs.csv")
+    top_picks = {}
     for name, user_prefs in PROFILES.items():
-        print_recommendations(name, user_prefs, songs)
+        top_picks[name] = print_recommendations(name, user_prefs, songs)[0]
+    print_summary(top_picks)
 
 
 if __name__ == "__main__":
